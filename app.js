@@ -7,6 +7,8 @@ var logger = require('morgan');
 var productsRouter = require('./routes/products');
 var ordersRouter = require('./routes/orders');
 
+var corsHandler = require('./handlers/cors-handler');
+
 var app = express();
 
 
@@ -15,6 +17,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(corsHandler);
 
 //middleware routes
 app.use('/products', productsRouter);

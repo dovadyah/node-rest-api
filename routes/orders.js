@@ -10,7 +10,7 @@ router.get('/', (req, res, next) => {
 
 /* POST an order into database */
 router.post('/', (req, res, next) => {
-  res.status(200).json({
+  res.status(201).json({
     message: "Handling POST request to /orders",
     name: req.body.name,
     lastname: req.body.lastname
