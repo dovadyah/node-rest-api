@@ -3,18 +3,32 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mongoose = require('mongoose');
 
-var productsRouter = require('./routes/products');
-var ordersRouter = require('./routes/orders');
+var productsRouter = require('./api/routes/products');
+var ordersRouter = require('./api/routes/orders');
+
+var corsHandler = require('./api/handlers/cors-handler');
 
 var app = express();
 
+//set up database 
+mongoose.connect(
+  "mongodb+srv://node-api:" + process.env.MongoDBAtlas +"@node-cluster-7bhuc.mongodb.net/test?retryWrites=true&w=majority",
+  {
+    useUnifiedTopology: true,
+    useNewUrlParser: true
+  }
+)
+.then(() => console.log("Mongodb connected"))
+.catch(err => console.log(err));
 
 // middleware libraries
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(corsHandler);
 
 //middleware routes
 app.use('/products', productsRouter);
