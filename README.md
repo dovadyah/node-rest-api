@@ -1,8 +1,8 @@
 ## A small API for products and orders.
 
 We are creating a small API that allows use to acces two resources: products and orders. 
-We setup error and CORS handling, and practice modular programming with the use of node modules. 
-We are also utilizing MongoDB for permanent storage.
+We integrate error and CORS handling, and practice modular programming with the use of node modules. 
+We are also integrating MongoDB for permanent storage.
 
 #### Products Endpoint
 
