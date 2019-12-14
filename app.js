@@ -13,7 +13,7 @@ var corsHandler = require('./api/handlers/cors-handler');
 var app = express();
 
 //db params
-var uri = 'mongodb+srv://node-api:' + process.env.MongoDBAtlas + '@node-cluster-7bhuc.mongodb.net/test?retryWrites=true&w=majority';
+var uri = process.env.MongoDBAtlasURIs;
 var dbOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true
