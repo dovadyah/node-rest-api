@@ -4,11 +4,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
-
 var productsRouter = require('./api/routes/products');
 var ordersRouter = require('./api/routes/orders');
-
 var corsHandler = require('./api/handlers/cors-handler');
+var errorHandler = require('./api/handlers/error-handler');
 
 var app = express();
 
@@ -35,21 +34,9 @@ app.use('/products', productsRouter);
 app.use('/orders', ordersRouter);
 
 // catch 404 and forward to error handler
-app.use((req, res, next) =>{
-  next(createError(404));
-});
+app.use((req, res, next) => next(createError(404)));
 
 // error handler
-app.use((err, req, res, next) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.json({
-    error: res.locals.message + " " + err.status
-  });
-});
+app.use(errorHandler);
 
 module.exports = app;
