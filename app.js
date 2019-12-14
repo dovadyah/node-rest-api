@@ -11,10 +11,14 @@ var errorHandler = require('./api/handlers/error-handler');
 
 var app = express();
 
+//DB options for mongoose connection
+var dbOptions = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}
+
 //set up connection to MongoDB Atlas 
-//Do no use URLparser or Topology options because it will not work. 
-//This will show a deprecation message but will connect. Ignore it
-mongoose.connect(process.env.MongoDBAtlasURI)
+mongoose.connect(process.env.MongoDBAtlasURI, dbOptions)
 .then(() => console.log("Mongodb connected"))
 .catch(err => console.log(err)); 
 
