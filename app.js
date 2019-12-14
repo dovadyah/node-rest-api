@@ -12,15 +12,14 @@ var corsHandler = require('./api/handlers/cors-handler');
 
 var app = express();
 
-//db params
-var uri = process.env.MongoDBAtlasURI;
+//db options
 var dbOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true
 };
 
 //set up database 
-mongoose.connect( uri, dbOptions)
+mongoose.connect( process.env.MongoDBAtlasURI, dbOptions)
 .then(() => console.log("Mongodb connected"))
 .catch(err => console.log(err));
 
