@@ -11,14 +11,8 @@ var errorHandler = require('./api/handlers/error-handler');
 
 var app = express();
 
-//db options
-var dbOptions = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-};
-
 //set up database 
-mongoose.connect( process.env.MongoDBAtlasURI, dbOptions)
+mongoose.connect(process.env.MongoDBAtlasURI)
 .then(() => console.log("Mongodb connected"))
 .catch(err => console.log(err));
 
