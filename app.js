@@ -12,7 +12,8 @@ var errorHandler = require('./api/handlers/error-handler');
 var app = express();
 
 //set up connection to MongoDB Atlas 
-//Do no use URLparser or Topology options because it will not work, this will show a deprecation message but will connect. 
+//Do no use URLparser or Topology options because it will not work. 
+//This will show a deprecation message but will connect. Ignore it
 mongoose.connect(process.env.MongoDBAtlasURI)
 .then(() => console.log("Mongodb connected"))
 .catch(err => console.log(err)); 
