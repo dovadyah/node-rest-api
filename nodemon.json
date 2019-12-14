@@ -1,5 +1,5 @@
 {
     "env": {
-        "MongoDBAtlas": "123"
+        "MongoDBAtlas": "node"
     }
 }

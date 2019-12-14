@@ -12,12 +12,12 @@ var corsHandler = require('./api/handlers/cors-handler');
 
 var app = express();
 
+var uri = 'mongodb+srv://node-api:' + process.env.MongoDBAtlas + '@node-cluster-7bhuc.mongodb.net/test?retryWrites=true&w=majority';
 //set up database 
-mongoose.connect(
-  "mongodb+srv://node-api:" + process.env.MongoDBAtlas +"@node-cluster-7bhuc.mongodb.net/test?retryWrites=true&w=majority",
-  {
-    useUnifiedTopology: true,
-    useNewUrlParser: true
+mongoose.connect( uri, 
+  { 
+    useUnifiedTopology: true, 
+    useNewUrlParser: true 
   }
 )
 .then(() => console.log("Mongodb connected"))
