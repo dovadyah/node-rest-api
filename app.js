@@ -13,7 +13,7 @@ var corsHandler = require('./api/handlers/cors-handler');
 var app = express();
 
 //db params
-var uri = process.env.MongoDBAtlasURIs;
+var uri = process.env.MongoDBAtlasURI;
 var dbOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true
