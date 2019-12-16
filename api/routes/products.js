@@ -33,7 +33,7 @@ router.get('/', (req, res, next) => {
 router.post('/', (req, res, next) => {
   const product = new Product({               //set up a product with user input
     _id: new mongoose.Types.ObjectId(),
-    name: req.body.name,
+    item: req.body.item,
     price: req.body.price
   });
 
@@ -41,7 +41,7 @@ router.post('/', (req, res, next) => {
   .then(result => {
     console.log(result)
     res.status(201).json({
-      message: "Handling POST request to /products",
+      message: "Product Successfully Created",
       createdProduct: product
     });
   })
@@ -63,7 +63,6 @@ router.get('/:productId', (req, res, next) => {
   .exec()
   .then(product => {
     console.log("Found The Following Product:\n", product);   //Log the response 
-
     if(product){
       res.status(200).json(product);                           //send response
     } else{
@@ -85,11 +84,24 @@ router.get('/:productId', (req, res, next) => {
  */
 
 router.patch('/:productId', (req, res, next) => {
-  const productId = req.params.productId;
+  const updateOps = {};
 
-  res.status(200).json({
-    message: "Handling PATCH request for product with ID: " + productId,
+  for(const ops of req.body) updateOps[ops.propName] = ops.value;
+
+  Product.update( { _id: req.params.productId}, { $set: updateOps })
+  .exec()
+  .then(product => {
+    res.status(200).json({
+      message: "Product Updated",
+      update: product
+    });
   })
+  .catch(err => {
+    res.status(500).json({
+      message: "We've encounter a problem",
+      error: err
+    });
+  });
 });
 
 /* 
@@ -97,12 +109,20 @@ router.patch('/:productId', (req, res, next) => {
  */
 
 router.delete('/:productId', (req, res, next) => {
-  const productId = req.params.productId;
-
-  
-res.status(200).json({
-    message: "Handling DELETE request for product with ID: " + productId,
+  Product.remove({ _id: req.params.productId})
+  .exec()
+  .then((result) => {
+    res.status(200).json({
+      message: "Successfully deleted",
+      results: result
+    });
   })
+  .catch(err => {
+    res.status(500).json({
+      message: "Sorry, we've encouter a problem",
+      error: err
+    });
+  });
 });
 
 module.exports = router;
