@@ -86,6 +86,7 @@ router.get('/:productId', (req, res, next) => {
 router.patch('/:productId', (req, res, next) => {
   const updateOps = {};
 
+  //need to send a json array objects containing a propName and value for each field to update.
   for(const ops of req.body) updateOps[ops.propName] = ops.value;
 
   Product.update( { _id: req.params.productId}, { $set: updateOps })
