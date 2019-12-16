@@ -1,4 +1,4 @@
-## A small API for products and orders.
+## A RESTful API created with Node, Express, and MongoDB.
 
 We are creating a small API that allows use to acces two resources: products and orders. 
 We integrate error and CORS handling, and practice modular programming with the use of node modules. 
