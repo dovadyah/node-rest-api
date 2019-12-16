@@ -1,5 +1,5 @@
 {
     "env": {
-        "MongoDBAtlas": "123"
+        "MongoDBAtlasURI": "mongodb+srv://node-api:123@node-cluster-7bhuc.mongodb.net/test?retryWrites=true&w=majority"
     }
 }
