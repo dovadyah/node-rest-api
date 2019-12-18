@@ -5,7 +5,7 @@ module.exports = (req, res, next) =>{
     //Allow certain headers, use * to allow all headers
     res.header(
       'Access-Control-Allow-Headers', 
-      'Origin, X-Requested-With, Content-Type, Acept, Authorization'
+      'Origin, X-Requested-With, Content-Type, Accept, Authorization'
     );
     
     //method sent by browser before POST or PUT to see it it can make the request
