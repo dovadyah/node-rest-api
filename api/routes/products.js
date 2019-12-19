@@ -9,15 +9,24 @@ const mongoose = require('mongoose');
 
 router.get('/', (req, res, next) => {
   Product.find()
+  .select('item price _id') 
   .exec()
-  .then(products => {
-    if(products.length === 0){
-      res.status(404).json({
-        message: "Sorry, We couldn't find any products. This database is empty."
-      });
-    } else{
-      res.status(200).json(products);
+  .then(product => {
+    const responseObj = {
+      count: product.length,
+      products:  product.map(prdct => {
+        return {
+          item: prdct.item, 
+          price: prdct.price,
+          _id: prdct._id,
+          request: {
+            type: 'GET',
+            url: 'http://localhost:3000/products/' + prdct._id
+          }
+        }
+      })
     }
+    res.status(200).json(responseObj);
   })
   .catch(err => {
     res.status(500).json({
@@ -39,10 +48,16 @@ router.post('/', (req, res, next) => {
 
   product.save()                              //saves and returns a promise hwich prints out result, if not it catches an error.
   .then(result => {
-    console.log(result)
     res.status(201).json({
-      message: "Product Successfully Created",
-      createdProduct: product
+      createdProduct: {
+        item: result.item, 
+        price: result.price,
+        _id: result._id,
+        request: {
+          type: 'GET',
+          url: 'http://localhost:3000/products/' + result._id
+        }
+      }
     });
   })
   .catch(err => {
@@ -60,14 +75,31 @@ router.post('/', (req, res, next) => {
 
 router.get('/:productId', (req, res, next) => {
   Product.findById(req.params.productId)                      //Find product by utilizing ID from parameters
+  .select('item price _id')
   .exec()
   .then(product => {
-    console.log("Found The Following Product:\n", product);   //Log the response 
     if(product){
-      res.status(200).json(product);                           //send response
+      res.status(200).json({
+        product: product,
+        toUpdate: {
+          request: {
+            type: "PATCH",
+            url: 'http://localhost:3000/products/' + product._id
+          },
+          data: {
+            typeof: 'array',
+            values: {
+              object: {
+                propName: "property to update",
+                value: "value use for update"
+              }
+            }
+          }
+        }
+      });                           //send response
     } else{
       res.status(404).json({
-        message: "Sorry, We couldn't find a product by that id."
+        message: "Sorry, We couldn't find a product by that ID."
       });
     }
   })
@@ -93,8 +125,13 @@ router.patch('/:productId', (req, res, next) => {
   .exec()
   .then(product => {
     res.status(200).json({
-      message: "Product Updated",
-      update: product
+      fieldsUpdated: updateOps,
+      updatedProduct: {
+        request: {
+          type: 'GET',
+          url: 'http://localhost:3000/products/' + req.params.productId
+        }
+      }
     });
   })
   .catch(err => {
