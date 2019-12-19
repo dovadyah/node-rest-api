@@ -9,34 +9,31 @@ const mongoose = require('mongoose');
 
 router.get('/', (req, res, next) => {
 
-  Product.find()
-    .select('item price _id')
-    .exec()
-    .then(product => {
-
-      const responseObj = {
-        count: product.length,
-        products: product.map(prdct => {
-          return {
-            item: prdct.item,
-            price: prdct.price,
-            _id: prdct._id,
-            request: {
-              type: 'GET',
-              url: 'http://localhost:3000/products/' + prdct._id
+    Product.find()
+        .select('item price _id')
+        .exec()
+        .then(product => {
+            const responseObj = {
+                count: product.length,
+                products: product.map(prdct => {
+                    return {
+                        item: prdct.item,
+                        price: prdct.price,
+                        _id: prdct._id,
+                        request: {
+                            type: 'GET',
+                            url: 'http://localhost:3000/products/' + prdct._id
+                        }
+                    }
+                })
             }
-          }
+            res.status(200).json(responseObj);
         })
-      }
-
-      res.status(200).json(responseObj);
-
-    })
-    .catch(err => {
-      res.status(500).json({
-        error: err,
-      });
-    })
+        .catch(err => {
+            res.status(500).json({
+                error: err,
+            });
+        })
 });
 
 /* 
@@ -45,50 +42,48 @@ router.get('/', (req, res, next) => {
 
 router.post('/', (req, res, next) => {
 
-  const product = new Product({               //set up a product with user input
-    _id: new mongoose.Types.ObjectId(),
-    item: req.body.item,
-    price: req.body.price
-  });
-
-  product.save()
-    .then(result => {
-
-      res.status(201).json({
-        createdProduct: {
-          item: result.item,
-          price: result.price,
-          _id: result._id,
-          viewProduct: {
-            request: {
-              type: 'GET',
-              url: 'http://localhost:3000/products/' + result._id
-            }
-          },
-          toUpdate: {
-            request: {
-              type: "PATCH",
-              url: 'http://localhost:3000/products/' + product._id
-            },
-            requestBody: {
-              typeof: 'Array',
-              values: {
-                typeof: 'Object',
-                fields: ['propName', 'value']
-              }
-            }
-          }
-        }
-      });
-
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({                        //send error
-        message: "We've encounter a problem :(",
-        error: err
-      });
+    const product = new Product({               //set up a product with user input
+        _id: new mongoose.Types.ObjectId(),
+        item: req.body.item,
+        price: req.body.price
     });
+
+    product.save()
+        .then(result => {
+            res.status(201).json({
+                createdProduct: {
+                    item: result.item,
+                    price: result.price,
+                    _id: result._id,
+                    viewProduct: {
+                        request: {
+                            type: 'GET',
+                            url: 'http://localhost:3000/products/' + result._id
+                        }
+                    },
+                    toUpdate: {
+                        request: {
+                            type: "PATCH",
+                            url: 'http://localhost:3000/products/' + product._id
+                        },
+                        requestBody: {
+                            typeof: 'Array',
+                            values: {
+                                typeof: 'Object',
+                                fields: ['propName', 'value']
+                            }
+                        }
+                    }
+                }
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({                        //send error
+                message: "We've encounter a problem :(",
+                error: err
+            });
+        });
 });
 
 /* 
@@ -97,40 +92,39 @@ router.post('/', (req, res, next) => {
 
 router.get('/:productId', (req, res, next) => {
 
-  Product.findById(req.params.productId)                      //Find product by utilizing ID from parameters
-    .select('item price _id')
-    .exec()
-    .then(product => {
-
-      if (product) {
-        res.status(200).json({
-          product: product,
-          toUpdate: {
-            request: {
-              type: "PATCH",
-              url: 'http://localhost:3000/products/' + product._id
-            },
-            requestBody: {
-              typeof: 'Array',
-              values: {
-                typeof: 'Object',
-                fields: ['propName', 'value']
-              }
+    Product.findById(req.params.productId)                      //Find product by utilizing ID from parameters
+        .select('item price _id')
+        .exec()
+        .then(product => {
+            if (product) {
+                res.status(200).json({
+                    product: product,
+                    toUpdate: {
+                        request: {
+                            type: "PATCH",
+                            url: 'http://localhost:3000/products/' + product._id
+                        },
+                        requestBody: {
+                            typeof: 'Array',
+                            values: {
+                                typeof: 'Object',
+                                fields: ['propName', 'value']
+                            }
+                        }
+                    }
+                });
+            } else {
+                res.status(404).json({
+                    message: "Sorry, We couldn't find a product by that ID."
+                });
             }
-          }
+        })
+        .catch(err => {
+            res.status(500).json({
+                message: "We've encounter a problem :(",
+                error: err
+            });
         });
-      } else {
-        res.status(404).json({
-          message: "Sorry, We couldn't find a product by that ID."
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).json({
-        message: "We've encounter a problem :(",
-        error: err
-      });
-    });
 });
 
 /* 
@@ -139,32 +133,30 @@ router.get('/:productId', (req, res, next) => {
 
 router.patch('/:productId', (req, res, next) => {
 
-  const updateOps = {};
-  for (const ops of req.body) {
-    updateOps[ops.propName] = ops.value;
-  }
+    const updateOps = {};
+    for (const ops of req.body) {
+        updateOps[ops.propName] = ops.value;
+    }
 
-  Product.update({ _id: req.params.productId }, { $set: updateOps })
-    .exec()
-    .then(product => {
-
-      res.status(200).json({
-        fieldsUpdated: updateOps,
-        updatedProduct: {
-          request: {
-            type: 'GET',
-            url: 'http://localhost:3000/products/' + req.params.productId
-          }
-        }
-      });
-
-    })
-    .catch(err => {
-      res.status(500).json({
-        message: "We've encounter a problem",
-        error: err
-      });
-    });
+    Product.update({ _id: req.params.productId }, { $set: updateOps })
+        .exec()
+        .then(product => {
+            res.status(200).json({
+                fieldsUpdated: updateOps,
+                updatedProduct: {
+                    request: {
+                        type: 'GET',
+                        url: 'http://localhost:3000/products/' + req.params.productId
+                    }
+                }
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                message: "We've encounter a problem",
+                error: err
+            });
+        });
 });
 
 /* 
@@ -173,30 +165,28 @@ router.patch('/:productId', (req, res, next) => {
 
 router.delete('/:productId', (req, res, next) => {
 
-  Product.remove({ _id: req.params.productId })
-    .exec()
-    .then((result) => {
-
-      res.status(200).json({
-        message: "Successfully deleted",
-        toAddProduct: {
-          request: {
-            type: 'POST',
-            url: 'http://localhost:3000/products/',
-            dataFields: {
-              properties: ['item', 'price'],
-            }
-          }
-        }
-      });
-
-    })
-    .catch(err => {
-      res.status(500).json({
-        message: "Sorry, we've encouter a problem",
-        error: err
-      });
-    });
+    Product.remove({ _id: req.params.productId })
+        .exec()
+        .then((result) => {
+            res.status(200).json({
+                message: "Successfully deleted",
+                toAddProduct: {
+                    request: {
+                        type: 'POST',
+                        url: 'http://localhost:3000/products/',
+                        dataFields: {
+                            properties: ['item', 'price'],
+                        }
+                    }
+                }
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                message: "Sorry, we've encouter a problem",
+                error: err
+            });
+        });
 });
 
 module.exports = router;
