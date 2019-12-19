@@ -19,8 +19,8 @@ var dbOptions = {
 
 //set up connection to MongoDB Atlas 
 mongoose.connect(process.env.MongoDBAtlasURI, dbOptions)
-.then(() => console.log("Mongodb connected"))
-.catch(err => console.log(err)); 
+  .then(() => console.log("Mongodb connected"))
+  .catch(err => console.log(err));
 
 // middleware libraries
 app.use(logger('dev'));
