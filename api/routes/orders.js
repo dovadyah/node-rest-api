@@ -8,9 +8,21 @@ var Order = require('../models/order-model');
  */
 
 router.get('/', (req, res, next) => {
-    res.status(200).json({
-        message: "Handling GET request to /orders",
-    })
+
+    Order.find()
+        .select("quantity _id product")
+        .exec()
+        .then(orders => {
+            res.status(200).json({
+                orders: orders
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            })
+        })
+
 });
 
 
@@ -25,7 +37,7 @@ router.post('/', (req, res, next) => {
         _id: mongoose.Types.ObjectId(),
         quantity: req.body.quantity,
         product: req.body.productId
-    })
+    });
 
     //save new order to database
     order.save()
@@ -67,8 +79,8 @@ router.post('/', (req, res, next) => {
         .catch(err => {
             res.status(500).json({
                 error: err
-            })
-        })
+            });
+        });
 });
 
 
@@ -79,9 +91,19 @@ router.post('/', (req, res, next) => {
 router.get('/:orderId', (req, res, next) => {
     const orderId = req.params.orderId;
 
-    res.status(200).json({
-        message: "Handling GET request for order with ID: " + orderId,
-    })
+    Order.findById(orderId)
+        .select("quantity _id product")
+        .exec()
+        .then(order => {
+            res.status(200).json({
+                order: order
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            })
+        })
 });
 
 
